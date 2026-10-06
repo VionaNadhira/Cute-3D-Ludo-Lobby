@@ -1,0 +1,902 @@
+Bisa. Arah visualnya lebih tepat kalau dibuat **cute 3D cartoon board game**, dengan karakter chibi, warna cerah, material glossy, dan UI yang terasa seperti game mobile Jepang/Korea. Jangan menyalin aset karakter atau layout spesifik LINE Get Rich, tetapi ambil karakteristik visualnya.
+
+Buat sebuah **web game Ludo modern dengan visual 3D cartoon / cute board game**, terinspirasi dari kualitas visual game mobile Korea/Jepang seperti game board character-collection, tetapi **jangan menyalin karakter, aset, logo, layout, atau elemen spesifik dari LINE Get Rich**.
+
+Untuk tahap pertama, **hanya buat Home Screen / Main Menu**. Jangan membuat gameplay Ludo terlebih dahulu.
+
+Tujuan utama:
+
+> Home Screen harus terasa seperti game mobile premium yang penuh karakter, bukan website yang memiliki game.
+
+---
+
+# 1. TECH STACK
+
+Gunakan:
+
+* React
+* Vite
+* TypeScript
+* CSS modern
+* Framer Motion atau GSAP untuk UI animation
+* PixiJS hanya jika diperlukan untuk elemen 2D/game rendering
+* Lucide atau icon library yang sesuai
+
+Jangan menggunakan:
+
+* Bootstrap
+* Material UI default
+* dashboard template
+* SaaS UI template
+* generic glassmorphism
+* HTML button default
+
+Semua visual harus dibuat custom.
+
+---
+
+# 2. CORE VISUAL STYLE
+
+Gunakan gaya:
+
+**Cute 3D Cartoon Board Game**
+
+Karakteristik:
+
+* chibi characters
+* kepala sedikit besar
+* bentuk tubuh compact
+* ekspresi wajah jelas
+* mata besar tetapi tidak terlalu anime
+* rounded shapes
+* soft 3D modeling
+* glossy materials
+* colorful
+* toy-like
+* playful
+* polished
+* premium mobile game
+* soft ambient lighting
+* soft shadows
+* subtle reflections
+* colorful game objects
+* dimensional UI
+
+Bayangkan dunia game seperti:
+
+```text
+toy world
++
+cute characters
++
+board game
++
+premium mobile game UI
+```
+
+Bukan:
+
+```text
+flat website
++
+cards
++
+gradient
+```
+
+---
+
+# 3. COLOR DIRECTION
+
+Gunakan palet warna cerah dan playful.
+
+Dominan:
+
+* warm cream
+* soft blue
+* sky blue
+* coral
+* yellow
+* pink
+* mint
+* purple
+
+Warna harus terasa seperti dunia mainan.
+
+Gunakan warna yang cukup saturated untuk karakter dan CTA, tetapi background tetap sedikit lebih lembut agar karakter menjadi fokus.
+
+Hindari dark gaming aesthetic.
+
+Hindari neon cyberpunk.
+
+Hindari warna terlalu gelap.
+
+---
+
+# 4. BACKGROUND
+
+Background Home Screen harus terasa seperti sebuah **miniature cartoon world**.
+
+Jangan menggunakan background warna polos.
+
+Buat:
+
+* soft sky / gradient background
+* floating clouds
+* tiny stars
+* rounded hills
+* miniature houses
+* decorative trees
+* tiny game-board elements
+* floating dice
+* coins
+* small colorful particles
+
+Namun background harus dibuat subtle.
+
+Hero character tetap menjadi focal point.
+
+Gunakan beberapa layer:
+
+```text
+Background
+    ↓
+Clouds
+    ↓
+Environment
+    ↓
+Characters
+    ↓
+UI
+    ↓
+Particles
+```
+
+Berikan depth melalui:
+
+* blur pada object jauh
+* scale
+* shadow
+* parallax
+* opacity
+
+---
+
+# 5. MAIN CHARACTER
+
+Home Screen harus mempunyai **maskot utama**.
+
+Buat karakter original.
+
+Contoh:
+
+Cute cartoon animal mascot:
+
+* rabbit
+* bear
+* cat
+* puppy
+* penguin
+
+Pilih satu karakter utama dan gunakan secara konsisten.
+
+Karakter:
+
+* chibi
+* 3D
+* rounded
+* colorful clothing
+* expressive face
+* large eyes
+* cute pose
+* holding a giant dice
+
+Karakter berdiri atau duduk di atas miniature Ludo board.
+
+Jangan membuat karakter terlihat seperti manusia realistis.
+
+---
+
+# 6. HERO COMPOSITION
+
+Hero adalah fokus terbesar.
+
+Komposisi kira-kira:
+
+```text
+                    floating dice
+
+                         ↓
+
+                  [ CHARACTER ]
+                    /       \
+                   /         \
+              token         token
+
+                 miniature
+                game world
+
+                    PLAY
+                  NOW
+```
+
+Karakter jangan ditempatkan di dalam card.
+
+Jangan membuat hero menggunakan satu image rectangle.
+
+Buat compositing menggunakan beberapa element:
+
+```text
+Character
+Dice
+Token
+Coins
+Cloud
+Particles
+Board
+```
+
+Setiap object mempunyai depth sendiri.
+
+---
+
+# 7. CHARACTER ANIMATION
+
+Character harus hidup.
+
+Idle animation:
+
+* breathing
+* slight body movement
+* blinking
+* subtle head movement
+* ears/hair movement
+* floating
+* dice sedikit bergerak
+
+Saat mouse hover pada Play:
+
+* karakter bereaksi
+* karakter sedikit bounce
+* mata/facial expression berubah
+* dice melakukan small movement
+
+Animation harus halus.
+
+Jangan menggunakan looping animation yang terlalu cepat.
+
+---
+
+# 8. GAME LOGO
+
+Logo berada di bagian atas.
+
+Nama sementara:
+
+**LUDO**
+
+atau:
+
+**LUDO WORLD**
+
+Logo harus terasa seperti logo game.
+
+Gunakan:
+
+* rounded typography
+* thick letters
+* playful shape
+* subtle extrusion
+* shadow
+* highlight
+
+Jangan menggunakan typography biasa.
+
+Contoh visual:
+
+```text
+       L U D O
+```
+
+Huruf dapat mempunyai sedikit dimensionality seperti plastik/toy.
+
+---
+
+# 9. TOP BAR
+
+Top bar harus terlihat seperti game UI.
+
+Contoh:
+
+```text
+[ AVATAR ]      [ COIN 12,450 ] [ GEM 320 ] [ MAIL ] [ SETTINGS ]
+```
+
+Avatar:
+
+* circular
+* cute frame
+* small level indicator
+
+Coin:
+
+* gold coin icon
+* rounded capsule
+* number
+* small +
+
+Gem:
+
+* crystal icon
+* number
+* small +
+
+Jangan membuat resource bar terlihat seperti banking dashboard.
+
+Buat seperti resource UI game.
+
+---
+
+# 10. PLAYER LEVEL
+
+Dekat avatar:
+
+```text
+LV. 24
+```
+
+Tambahkan progress:
+
+```text
+████████░░
+```
+
+Buat progress bar kecil dengan style cartoon.
+
+---
+
+# 11. PRIMARY BUTTON
+
+Tombol utama:
+
+**PLAY NOW**
+
+Ini harus menjadi elemen UI paling menonjol.
+
+Gunakan style:
+
+* oversized
+* rounded
+* 3D
+* thick border
+* inner highlight
+* bottom shadow
+* colorful
+* tactile
+
+Button harus terlihat seperti tombol fisik yang bisa ditekan.
+
+Contoh visual:
+
+```text
+╭────────────────────╮
+│                    │
+│     PLAY NOW       │
+│                    │
+╰────────────────────╯
+        shadow
+```
+
+Saat hover:
+
+```text
+scale: 1.04
+translateY: -2px
+```
+
+Saat click:
+
+```text
+scale: 0.96
+translateY: 3px
+```
+
+Tambahkan subtle shine animation.
+
+---
+
+# 12. GAME MODE
+
+Di bawah PLAY NOW:
+
+### QUICK MATCH
+
+Icon:
+
+dice / lightning
+
+Text:
+
+`Find players instantly`
+
+### FRIENDS
+
+Icon:
+
+users
+
+Text:
+
+`Play with friends`
+
+### LOCAL
+
+Icon:
+
+gamepad
+
+Text:
+
+`Play on this device`
+
+Gunakan compact buttons.
+
+Jangan membuat tiga giant cards.
+
+---
+
+# 13. DAILY REWARD
+
+Buat floating game object:
+
+```text
+DAILY BONUS
+
+DAY 07
+
+[ GOLD COIN ]
+
++500
+
+CLAIM
+```
+
+Gunakan:
+
+* treasure chest
+* coins
+* small sparkle
+* cute illustration
+
+Daily reward harus terlihat seperti object di game world.
+
+---
+
+# 14. DAILY MISSION
+
+Section:
+
+```text
+DAILY MISSIONS
+
+Win 2 matches
+
+████████░░
+
+1 / 2
+
++250
+```
+
+Gunakan small cartoon panel.
+
+Panel memiliki:
+
+* rounded corners
+* thick subtle outline
+* soft shadow
+* small icon
+* reward badge
+
+Jangan membuat panel terlalu besar.
+
+---
+
+# 15. SHOP
+
+Buat Shop Preview.
+
+Judul:
+
+**SHOP**
+
+Item:
+
+```text
+[ Dice Skin ]
+[ Token Skin ]
+[ Avatar ]
+[ Board Theme ]
+```
+
+Setiap item berupa miniature 3D object.
+
+Misalnya:
+
+* golden dice
+* strawberry token
+* crown avatar
+* candy board
+
+Gunakan horizontal carousel pada mobile.
+
+---
+
+# 16. FRIENDS
+
+Buat preview friends.
+
+Contoh:
+
+```text
+FRIENDS
+
+[avatar] Alex      ONLINE
+[avatar] Kevin     PLAYING
+[avatar] Mia       ONLINE
+```
+
+Gunakan cartoon avatar.
+
+Online indicator:
+
+small green circular indicator.
+
+Tambahkan:
+
+`+ INVITE`
+
+---
+
+# 17. BOTTOM NAVIGATION
+
+Mobile:
+
+```text
+HOME
+FRIENDS
+SHOP
+REWARDS
+PROFILE
+```
+
+Gunakan icon besar.
+
+Icon aktif harus mempunyai:
+
+* colored background
+* small bounce
+* shadow
+* active indicator
+
+Navigation harus terlihat seperti game navigation, bukan website navigation.
+
+---
+
+# 18. DESKTOP LAYOUT
+
+Desktop harus menggunakan full viewport.
+
+Contoh:
+
+```text
+┌─────────────────────────────────────────────────────┐
+│ LOGO        COINS  GEMS        AVATAR  SETTINGS    │
+│                                                     │
+│                                                     │
+│                CARTOON WORLD                        │
+│                                                     │
+│             CHARACTER + DICE                       │
+│                                                     │
+│                PLAY NOW                             │
+│                                                     │
+│       QUICK MATCH    FRIENDS    LOCAL               │
+│                                                     │
+│  DAILY        MISSIONS        SHOP        FRIENDS   │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
+
+Jangan menggunakan grid dashboard yang terlalu kaku.
+
+Layout harus terasa seperti game lobby.
+
+---
+
+# 19. MOBILE LAYOUT
+
+Prioritaskan portrait.
+
+Target:
+
+```text
+375x812
+390x844
+430x932
+```
+
+Layout:
+
+```text
+┌──────────────────────────┐
+│ avatar  coins  gems      │
+│                          │
+│      LUDO LOGO           │
+│                          │
+│        CHARACTER         │
+│                          │
+│        PLAY NOW          │
+│                          │
+│    QUICK   FRIENDS       │
+│                          │
+│ DAILY REWARD             │
+│                          │
+│ SHOP PREVIEW             │
+│                          │
+├──────────────────────────┤
+│ HOME FRIENDS SHOP ...    │
+└──────────────────────────┘
+```
+
+Hero character harus tetap terlihat.
+
+Jangan membuat UI terlalu padat.
+
+Gunakan vertical scrolling jika diperlukan.
+
+---
+
+# 20. UI MATERIAL
+
+Gunakan visual material seperti:
+
+* plastic
+* rubber
+* glossy toy
+* soft metal
+* candy
+* wood
+* paper
+
+UI harus memiliki physicality.
+
+Contoh button:
+
+```text
+highlight
+   ↓
+┌───────────────┐
+│   PLAY NOW    │
+└───────────────┘
+       ↓
+   soft shadow
+```
+
+Bukan:
+
+```text
+[ PLAY NOW ]
+```
+
+yang hanya berupa CSS rectangle.
+
+---
+
+# 21. ICON STYLE
+
+Gunakan:
+
+**3D cartoon / soft rounded icons**
+
+Hindari icon terlalu tipis.
+
+Icon harus mempunyai:
+
+* rounded geometry
+* subtle shadow
+* flat-to-3D appearance
+* consistent stroke
+* game-like proportions
+
+---
+
+# 22. MICRO INTERACTIONS
+
+Tambahkan:
+
+* button bounce
+* coin bounce
+* gem sparkle
+* avatar idle animation
+* dice wobble
+* notification pulse
+* reward sparkle
+* hover character reaction
+* token floating
+* subtle parallax
+
+Tetapi gunakan animation secara terkontrol.
+
+---
+
+# 23. RESPONSIVE BEHAVIOR
+
+Desktop:
+
+* full cartoon environment
+* larger character
+* more decorative objects
+* wider hero composition
+
+Tablet:
+
+* reduce background decorations
+* reduce hero scale
+
+Mobile:
+
+* simplify background
+* keep main character
+* keep Play button prominent
+* bottom navigation fixed
+* hide secondary decorations when space is limited
+
+Tidak boleh ada horizontal overflow.
+
+---
+
+# 24. COMPONENT STRUCTURE
+
+Gunakan:
+
+```text
+src/
+├── components/
+│   ├── GameLogo.tsx
+│   ├── PlayerHeader.tsx
+│   ├── ResourceBar.tsx
+│   ├── CharacterHero.tsx
+│   ├── DiceCharacter.tsx
+│   ├── PlayButton.tsx
+│   ├── GameModes.tsx
+│   ├── DailyReward.tsx
+│   ├── Missions.tsx
+│   ├── ShopPreview.tsx
+│   ├── FriendsPreview.tsx
+│   └── BottomNavigation.tsx
+│
+├── pages/
+│   └── Home.tsx
+│
+├── assets/
+│   ├── characters/
+│   ├── dice/
+│   ├── tokens/
+│   ├── backgrounds/
+│   ├── ui/
+│   └── icons/
+│
+└── App.tsx
+```
+
+Jangan membuat seluruh UI dalam satu component.
+
+---
+
+# 25. ASSET STRATEGY
+
+Jika belum memiliki asset final:
+
+Buat temporary visual assets menggunakan:
+
+* SVG
+* CSS shapes
+* procedural shapes
+* simple custom illustrations
+
+Jangan menggunakan random stock images.
+
+Jangan menggunakan karakter berhak cipta.
+
+Semua karakter dan artwork harus original.
+
+Struktur asset harus mudah diganti nanti dengan:
+
+* GLB
+* PNG
+* WebP
+* SVG
+
+---
+
+# 26. DESIGN PRINCIPLE
+
+Prioritas:
+
+```text
+Character
+    ↓
+Play Button
+    ↓
+Game Modes
+    ↓
+Rewards
+    ↓
+Shop / Friends
+```
+
+Jangan semua elemen mempunyai visual weight yang sama.
+
+Hero harus langsung menarik perhatian.
+
+---
+
+# 27. IMPORTANT
+
+Jangan membuat:
+
+* admin dashboard
+* SaaS interface
+* generic card grid
+* dark gaming UI
+* cyberpunk UI
+* excessive glassmorphism
+* overly flat UI
+* realistic photography
+* generic AI-generated looking artwork
+
+Target visual:
+
+**cute 3D cartoon board-game lobby dengan karakter sebagai pusat perhatian.**
+
+Harus terasa seperti game mobile premium Korea/Jepang yang dibuat dengan budget besar.
+
+Bukan clone LINE Get Rich.
+
+Buat **IP dan visual identity original**.
+
+---
+
+# 28. FINAL REQUIREMENT
+
+Implementasikan Home Screen sampai production-quality.
+
+Pastikan:
+
+* responsive
+* polished
+* interactive
+* animated
+* no horizontal overflow
+* no console errors
+* TypeScript clean
+* componentized
+* mobile optimized
+* desktop optimized
+
+Jalankan project dan lakukan visual check pada:
+
+```text
+375x812
+390x844
+430x932
+768x1024
+1440x900
+1920x1080
+```
+
+Fokus utama:
+
+**3D cartoon character + colorful miniature world + tactile game UI + premium mobile-game feeling.**
+
+Jangan lanjut ke gameplay Ludo sampai Home Screen ini selesai.

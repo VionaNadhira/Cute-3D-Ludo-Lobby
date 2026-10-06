@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Ludo World"
+description = "An original, character-led Ludo game lobby with a polished toy-like world, animated mascot, play modes, rewards, shop, and friends preview."
+version = "1.0.0"
+id = "artifacts/ludo-lobby"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18802
+
+[services.development]
+run = "pnpm --filter @workspace/ludo-lobby run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ludo-lobby", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/ludo-lobby/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18802"
+BASE_PATH = "/"
