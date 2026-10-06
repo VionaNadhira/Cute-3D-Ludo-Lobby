@@ -1,8 +1,11 @@
 import { Bell, Settings } from 'lucide-react';
 
-type PlayerHeaderProps = { onNotice: (message: string) => void };
+type PlayerHeaderProps = {
+  coins: number;
+  onNotice: (message: string) => void;
+};
 
-export function PlayerHeader({ onNotice }: PlayerHeaderProps) {
+export function PlayerHeader({ coins, onNotice }: PlayerHeaderProps) {
   return (
     <header className="topbar">
       <div className="profile-wrap" data-testid="profile-player">
@@ -16,7 +19,7 @@ export function PlayerHeader({ onNotice }: PlayerHeaderProps) {
       </div>
       <div className="resource-row">
         <div className="resource-pill" data-testid="value-coins">
-          <span className="resource-icon">C</span><span className="resource-value">12,450</span>
+          <span className="resource-icon">C</span><span className="resource-value">{coins.toLocaleString('en-US')}</span>
           <button className="add-resource" aria-label="Add coins" data-testid="button-add-coins" onClick={() => onNotice('Coin shop is warming up!')}>+</button>
         </div>
         <div className="resource-pill" data-testid="value-gems">

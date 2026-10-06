@@ -1,9 +1,12 @@
-import { useState } from 'react';
 import { Gamepad2, Sparkles, Users, Zap } from 'lucide-react';
 
-type CharacterHeroProps = { onPlay: (mode: string) => void };
+type CharacterHeroProps = {
+  onPlay: (mode: string) => void;
+  claimed: boolean;
+  onDailyClaim: () => void;
+};
 
-export function CharacterHero({ onPlay }: CharacterHeroProps) {
+export function CharacterHero({ onPlay, claimed, onDailyClaim }: CharacterHeroProps) {
   return (
     <section className="hero" aria-label="Game lobby">
       <div className="hero-title" aria-label="Pip's Playfield">
@@ -11,7 +14,7 @@ export function CharacterHero({ onPlay }: CharacterHeroProps) {
         <div className="logo-sub">PIP&apos;S PLAYFIELD</div>
       </div>
       <aside className="world-side left">
-        <DailyReward onClaim={() => onPlay('Daily bonus claimed — 500 coins added!')} />
+        <DailyReward claimed={claimed} onClaim={onDailyClaim} />
       </aside>
       <div className="hero-center">
         <div className="character-stage">
@@ -20,7 +23,7 @@ export function CharacterHero({ onPlay }: CharacterHeroProps) {
           <span className="spark s3"><Sparkles size={13}/></span>
           <div className="token t1" aria-hidden="true"/>
           <div className="token t2" aria-hidden="true"/>
-          <img className="mascot" src="/pip-mascot.png" alt="Pip the fox holding a lucky die" />
+          <img className="mascot" src="/pip-mascot-cutout.png" alt="Pip the fox holding a lucky die" />
           <div className="floating-die" aria-hidden="true">5</div>
         </div>
         <button className="play-button" data-testid="button-play-now" onClick={() => onPlay('Finding your next game…')}>
@@ -45,8 +48,13 @@ export function CharacterHero({ onPlay }: CharacterHeroProps) {
   );
 }
 
-export function DailyReward({ onClaim }: { onClaim: () => void }) {
-  const [claimed, setClaimed] = useState(false);
+export function DailyReward({
+  onClaim,
+  claimed,
+}: {
+  onClaim: () => void;
+  claimed: boolean;
+}) {
   return (
     <div className="mini-panel reward-panel">
       <div className="panel-kicker">DAILY BONUS · DAY 07</div>
@@ -54,7 +62,7 @@ export function DailyReward({ onClaim }: { onClaim: () => void }) {
         <div className="coin-stack" aria-hidden="true"><i>C</i><i>C</i></div>
         <div className="reward-amount">+500</div>
       </div>
-      <button className={`claim-button${claimed ? ' claimed' : ''}`} data-testid="button-claim-daily" onClick={() => { if (!claimed) { setClaimed(true); onClaim(); } }}>
+      <button className={`claim-button${claimed ? ' claimed' : ''}`} data-testid="button-claim-daily" onClick={() => { if (!claimed) onClaim(); }}>
         {claimed ? 'CLAIMED' : 'CLAIM REWARD'}
       </button>
     </div>
