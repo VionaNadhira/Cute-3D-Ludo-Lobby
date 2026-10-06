@@ -1,0 +1,1161 @@
+Revisi dan rapikan seluruh **navigation system dan information architecture** Ludo Web.
+
+Gunakan visual yang sudah ditentukan sebelumnya:
+
+**cute 3D cartoon board game**, original character, toy-like world, colorful, glossy, rounded, playful, premium mobile-game aesthetic.
+
+Tujuan utama:
+
+> Buat struktur aplikasi yang sederhana, konsisten, mudah dipahami, dan terasa seperti game mobile, bukan website dashboard.
+
+Jangan membuat fitur yang sama muncul di banyak tempat tanpa alasan.
+
+---
+
+# 1. PRIMARY NAVIGATION
+
+Gunakan struktur navigasi utama berikut:
+
+```text
+HOME
+PLAY
+REWARDS
+SHOP
+FRIENDS
+PROFILE
+```
+
+Ini adalah **primary navigation**.
+
+Tidak perlu menu:
+
+```text
+MISSIONS
+```
+
+sebagai primary navigation terpisah.
+
+**MISSIONS menjadi bagian dari REWARDS.**
+
+---
+
+# 2. MOBILE NAVIGATION
+
+Pada mobile gunakan bottom navigation.
+
+Urutan:
+
+```text
+HOME
+PLAY
+REWARDS
+SHOP
+PROFILE
+```
+
+Friends tidak perlu menjadi tab utama mobile agar navigation tidak terlalu padat.
+
+Friends dapat diakses melalui:
+
+```text
+HOME
+↓
+FRIENDS
+```
+
+atau melalui Profile/More jika diperlukan.
+
+Bottom navigation:
+
+* fixed
+* safe-area aware
+* 5 item maksimal
+* icon besar
+* label kecil
+* active state jelas
+* cartoon/game-like
+* tidak menggunakan style dashboard
+
+---
+
+# 3. DESKTOP NAVIGATION
+
+Pada desktop gunakan navigation horizontal atau compact sidebar.
+
+Struktur:
+
+```text
+[ LUDO ]
+
+HOME
+PLAY
+REWARDS
+SHOP
+FRIENDS
+PROFILE
+```
+
+Jika menggunakan sidebar:
+
+```text
+┌──────────────┐
+│ LUDO         │
+│              │
+│ HOME         │
+│ PLAY         │
+│ REWARDS      │
+│ SHOP         │
+│ FRIENDS      │
+│ PROFILE      │
+└──────────────┘
+```
+
+Jangan membuat sidebar besar seperti admin dashboard.
+
+Navigation harus tetap terasa sebagai game lobby.
+
+---
+
+# 4. HOME
+
+Home adalah **main game lobby**.
+
+Home harus sangat clean.
+
+Home hanya berisi:
+
+```text
+LOGO
+PLAYER HEADER
+MAIN CHARACTER
+PLAY NOW
+GAME MODE SHORTCUTS
+DECORATIVE GAME WORLD
+PRIMARY NAVIGATION
+```
+
+Jangan menampilkan full section:
+
+```text
+DAILY BONUS
+TODAY'S MISSION
+TOY SHOP
+FRIENDS LIST
+REWARD TRACK
+```
+
+di Home.
+
+Home tidak boleh terasa seperti dashboard statistik.
+
+---
+
+# 5. HOME STRUCTURE
+
+Desktop:
+
+```text
+┌──────────────────────────────────────────────┐
+│ LUDO              COINS GEMS       AVATAR   │
+│                                              │
+│                                              │
+│               CARTOON WORLD                  │
+│                                              │
+│                  MASCOT                      │
+│               + DICE                         │
+│                                              │
+│                 PLAY NOW                     │
+│                                              │
+│       QUICK MATCH       VS BOT               │
+│       FRIENDS            LOCAL               │
+│                                              │
+│                                              │
+│ HOME  PLAY  REWARDS  SHOP  FRIENDS  PROFILE │
+└──────────────────────────────────────────────┘
+```
+
+Tetapi jangan menerapkan wireframe ini secara literal.
+
+Gunakan hanya sebagai hierarchy.
+
+---
+
+# 6. PLAY
+
+`PLAY` adalah pusat seluruh mode permainan.
+
+Route:
+
+```text
+/play
+```
+
+Halaman:
+
+```text
+PLAY
+```
+
+Tampilkan:
+
+```text
+QUICK MATCH
+VS BOT
+PLAY WITH FRIENDS
+LOCAL
+```
+
+Prioritas untuk versi sekarang:
+
+```text
+VS BOT
+```
+
+karena online multiplayer belum dibuat.
+
+---
+
+# 7. PLAY MODE STRUCTURE
+
+Gunakan empat mode:
+
+### QUICK MATCH
+
+```text
+Find players online
+```
+
+Status:
+
+```text
+COMING SOON
+```
+
+Jangan implementasikan multiplayer online dulu.
+
+### VS BOT
+
+```text
+Play against computer
+```
+
+Status:
+
+```text
+AVAILABLE
+```
+
+Ini harus bisa dimainkan.
+
+### PLAY WITH FRIENDS
+
+```text
+Create or join a private room
+```
+
+Status:
+
+```text
+COMING SOON
+```
+
+### LOCAL
+
+```text
+Play on this device
+```
+
+Status:
+
+```text
+AVAILABLE
+```
+
+Untuk tahap awal, implementasikan:
+
+```text
+VS BOT
+LOCAL
+```
+
+---
+
+# 8. VS BOT
+
+Flow:
+
+```text
+PLAY
+ ↓
+VS BOT
+ ↓
+BOT SETUP
+ ↓
+START GAME
+ ↓
+GAME BOARD
+ ↓
+RESULT
+```
+
+Bot Setup:
+
+```text
+VS BOT
+
+YOUR CHARACTER
+
+[ Character ]
+
+BOT
+
+[ Random Bot ]
+
+DIFFICULTY
+
+[ EASY ]
+[ NORMAL ]
+[ HARD ]
+
+PLAYERS
+
+[ 1 PLAYER ]
+```
+
+Untuk versi awal:
+
+```text
+1 Human
++
+1 Bot
+```
+
+harus berfungsi penuh.
+
+---
+
+# 9. LOCAL
+
+Flow:
+
+```text
+PLAY
+ ↓
+LOCAL
+ ↓
+PLAYER SETUP
+ ↓
+START GAME
+ ↓
+GAME BOARD
+ ↓
+RESULT
+```
+
+Player setup:
+
+```text
+LOCAL GAME
+
+PLAYERS
+
+[ 2 ]
+[ 3 ]
+[ 4 ]
+
+PLAYER COLORS
+
+Red
+Blue
+Green
+Yellow
+
+START GAME
+```
+
+Semua pemain dikontrol pada device yang sama.
+
+---
+
+# 10. REWARDS
+
+Route:
+
+```text
+/rewards
+```
+
+`REWARDS` menjadi pusat seluruh sistem reward.
+
+Jangan membuat Daily Bonus atau Reward Track sebagai primary navigation.
+
+Struktur:
+
+```text
+REWARDS
+│
+├── DAILY BONUS
+│
+└── REWARD TRACK
+```
+
+---
+
+# 11. DAILY BONUS
+
+Di dalam Rewards:
+
+```text
+DAILY BONUS
+
+DAY 01
+DAY 02
+DAY 03
+DAY 04
+DAY 05
+DAY 06
+DAY 07
+
+CURRENT REWARD
+
++500
+
+CLAIMED
+```
+
+Gunakan asset:
+
+```text
+pip-mascot-cutout.png
+```
+
+untuk artwork:
+
+**Pip the fox holding a lucky die**
+
+Jika asset tersebut sudah ada di project, gunakan asset tersebut.
+
+Jangan menampilkan Daily Bonus di Home.
+
+---
+
+# 12. REWARD TRACK
+
+Masih di halaman Rewards:
+
+```text
+REWARD TRACK
+
+PLAY 3 GAMES
+
+████████░░
+
+2 / 3
+
+NEXT REWARD
+
++1000 COINS
+
+[ DETAILS ]
+```
+
+Boleh dibuat sebagai section kedua pada Rewards.
+
+Jangan membuat halaman terpisah bernama Reward Track kecuali nanti diperlukan.
+
+---
+
+# 13. MISSIONS
+
+Missions juga berada di:
+
+```text
+/rewards
+```
+
+atau sebagai tab/section internal Rewards.
+
+Struktur:
+
+```text
+REWARDS
+
+DAILY BONUS
+
+REWARD TRACK
+
+MISSIONS
+```
+
+Contoh:
+
+```text
+TODAY'S MISSIONS
+
+Win 2 matches
+1 / 2 complete
++250
+
+Roll a 6 three times
+1 / 3
++150
+
+Capture 2 tokens
+0 / 2
++300
+```
+
+Jangan menambahkan Missions sebagai bottom navigation.
+
+---
+
+# 14. REWARDS INTERNAL NAVIGATION
+
+Gunakan segmented tabs atau section navigation:
+
+```text
+DAILY
+TRACK
+MISSIONS
+```
+
+Contoh:
+
+```text
+┌──────────────────────────────────┐
+│ REWARDS                          │
+│                                  │
+│ DAILY   TRACK   MISSIONS         │
+│ ─────                          │
+│                                  │
+│ DAILY BONUS                      │
+│ DAY 07                            │
+│ +500                              │
+│ CLAIMED                           │
+│                                  │
+│ Pip mascot                       │
+└──────────────────────────────────┘
+```
+
+Jangan membuat nested navigation terlalu dalam.
+
+---
+
+# 15. SHOP
+
+Route:
+
+```text
+/shop
+```
+
+Shop adalah pusat customization.
+
+Kategori:
+
+```text
+SHOP
+
+DICE
+TOKENS
+AVATARS
+BOARDS
+```
+
+Contoh item:
+
+```text
+Lucky Dice
+Berry Token
+Tiny Crown
+Candy Park
+```
+
+Gunakan visual 3D cartoon.
+
+Shop harus terasa seperti game shop.
+
+Jangan seperti ecommerce.
+
+Tidak perlu:
+
+* cart
+* checkout
+* product table
+* ecommerce filters
+
+pada tahap ini.
+
+---
+
+# 16. FRIENDS
+
+Route:
+
+```text
+/friends
+```
+
+Friends adalah social hub.
+
+Struktur:
+
+```text
+FRIENDS
+
+ONLINE
+PLAYING
+OFFLINE
+```
+
+Contoh:
+
+```text
+Alex
+ONLINE
+
+Kevin
+PLAYING
+
+Mia
+ONLINE
+```
+
+Actions:
+
+```text
+INVITE
+VIEW PROFILE
+```
+
+Untuk sekarang belum perlu real-time social backend.
+
+Gunakan mock data.
+
+---
+
+# 17. PROFILE
+
+Route:
+
+```text
+/profile
+```
+
+Profile berisi:
+
+```text
+AVATAR
+USERNAME
+LEVEL
+XP
+STATS
+SETTINGS
+```
+
+Contoh:
+
+```text
+PLAYER
+
+Level 24
+
+████████░░
+2400 / 3000 XP
+
+MATCHES
+24
+
+WINS
+17
+
+WIN RATE
+71%
+
+[ SETTINGS ]
+```
+
+Jangan menampilkan terlalu banyak statistik.
+
+Profile harus tetap terasa seperti game profile.
+
+---
+
+# 18. SETTINGS
+
+Settings bukan primary navigation.
+
+Route:
+
+```text
+/settings
+```
+
+Akses dari:
+
+```text
+PROFILE
+↓
+SETTINGS
+```
+
+atau settings icon pada top header.
+
+Isi:
+
+```text
+SOUND
+MUSIC
+LANGUAGE
+NOTIFICATIONS
+ACCOUNT
+```
+
+Gunakan compact game settings UI.
+
+---
+
+# 19. GLOBAL TOP HEADER
+
+Pada desktop/mobile, header dapat memiliki:
+
+```text
+AVATAR
+COINS
+GEMS
+SETTINGS
+```
+
+Namun jangan membuat header terlalu besar.
+
+Top header hanya untuk informasi global.
+
+Jangan memasukkan:
+
+```text
+Daily Bonus
+Mission
+Shop
+Friends
+Reward Track
+```
+
+ke dalam header.
+
+---
+
+# 20. INFORMATION ARCHITECTURE
+
+Struktur final:
+
+```text
+LUDO
+│
+├── HOME
+│
+├── PLAY
+│   ├── QUICK MATCH
+│   ├── VS BOT
+│   │   ├── BOT SETUP
+│   │   └── GAME
+│   ├── PLAY WITH FRIENDS
+│   └── LOCAL
+│       ├── PLAYER SETUP
+│       └── GAME
+│
+├── REWARDS
+│   ├── DAILY BONUS
+│   ├── REWARD TRACK
+│   └── MISSIONS
+│
+├── SHOP
+│   ├── DICE
+│   ├── TOKENS
+│   ├── AVATARS
+│   └── BOARDS
+│
+├── FRIENDS
+│
+└── PROFILE
+    └── SETTINGS
+```
+
+Ini menjadi struktur utama aplikasi.
+
+---
+
+# 21. ROUTING
+
+Gunakan routing yang jelas.
+
+Contoh:
+
+```text
+/
+    Home
+
+/play
+    Play Mode Selection
+
+/play/bot
+    Bot Setup
+
+/game/bot
+    Bot Game
+
+/play/local
+    Local Setup
+
+/game/local
+    Local Game
+
+/result
+    Match Result
+
+/rewards
+    Rewards
+
+/shop
+    Shop
+
+/friends
+    Friends
+
+/profile
+    Profile
+
+/settings
+    Settings
+```
+
+Jangan membuat route berdasarkan component.
+
+Route harus merepresentasikan halaman/feature.
+
+---
+
+# 22. NAVIGATION RULE
+
+Setiap halaman harus memiliki cara yang jelas untuk kembali.
+
+Contoh:
+
+```text
+Home
+ ↓
+Play
+ ↓
+VS Bot
+ ↓
+Game
+ ↓
+Result
+ ↓
+Play Again
+ ↓
+Game
+```
+
+atau:
+
+```text
+Result
+ ↓
+Home
+```
+
+Saat sedang bermain:
+
+**jangan tampilkan primary navigation penuh** jika dapat mengganggu gameplay.
+
+Game screen harus fokus pada permainan.
+
+---
+
+# 23. GAMEPLAY NAVIGATION
+
+Saat masuk Game:
+
+```text
+HOME NAVIGATION
+```
+
+digantikan oleh:
+
+```text
+GAME HUD
+```
+
+Contoh:
+
+```text
+┌────────────────────────────┐
+│ ← EXIT       TURN: YOU     │
+│                            │
+│                            │
+│        GAME BOARD          │
+│                            │
+│                            │
+│             DICE           │
+└────────────────────────────┘
+```
+
+Jika user menekan Exit:
+
+tampilkan confirmation:
+
+```text
+QUIT GAME?
+
+Your current match will be lost.
+
+[ CONTINUE ]
+[ QUIT ]
+```
+
+---
+
+# 24. RESULT SCREEN
+
+Setelah game:
+
+```text
+YOU WIN
+```
+
+atau:
+
+```text
+BOT WINS
+```
+
+Tampilkan:
+
+```text
+COINS
++250
+
+XP
++100
+```
+
+Actions:
+
+```text
+PLAY AGAIN
+HOME
+```
+
+Jika VS Bot:
+
+```text
+PLAY AGAIN
+```
+
+harus langsung membuat game baru dengan konfigurasi yang sama.
+
+---
+
+# 25. STATE PERSISTENCE
+
+Untuk tahap development gunakan localStorage untuk data sederhana:
+
+```text
+coins
+gems
+level
+xp
+daily reward state
+missions progress
+reward track progress
+settings
+```
+
+Jangan membuat database/backend dulu.
+
+Game state pertandingan tidak harus disimpan permanen.
+
+---
+
+# 26. MOBILE PRIORITY
+
+Mobile navigation:
+
+```text
+HOME
+PLAY
+REWARDS
+SHOP
+PROFILE
+```
+
+Friends dapat diakses dari Home/Profile atau shortcut dalam Friends screen.
+
+Desktop dapat menampilkan:
+
+```text
+HOME
+PLAY
+REWARDS
+SHOP
+FRIENDS
+PROFILE
+```
+
+Jangan memaksakan enam item pada mobile.
+
+---
+
+# 27. VISUAL CONSISTENCY
+
+Semua halaman harus menggunakan design system yang sama:
+
+* same typography
+* same button language
+* same corner radius
+* same shadows
+* same cartoon material
+* same icon style
+* same spacing system
+* same animation language
+
+Contohnya:
+
+```text
+Home
+Rewards
+Shop
+Friends
+Profile
+```
+
+harus terlihat sebagai bagian dari **satu game yang sama**.
+
+Jangan membuat setiap halaman terasa seperti template berbeda.
+
+---
+
+# 28. FINAL USER FLOW
+
+User journey utama:
+
+```text
+OPEN WEBSITE
+      ↓
+HOME
+      ↓
+PLAY
+      ↓
+VS BOT
+      ↓
+BOT SETUP
+      ↓
+START GAME
+      ↓
+LUDO GAME
+      ↓
+WIN / LOSE
+      ↓
+RESULT
+      ↓
+PLAY AGAIN / HOME
+```
+
+Secondary flow:
+
+```text
+HOME
+ ↓
+REWARDS
+ ├── DAILY BONUS
+ ├── REWARD TRACK
+ └── MISSIONS
+```
+
+```text
+HOME
+ ↓
+SHOP
+ ├── DICE
+ ├── TOKENS
+ ├── AVATARS
+ └── BOARDS
+```
+
+```text
+HOME
+ ↓
+FRIENDS
+```
+
+```text
+HOME
+ ↓
+PROFILE
+ ↓
+SETTINGS
+```
+
+---
+
+# 29. IMPORTANT RULE
+
+Jangan membuat Home menjadi tempat untuk menampilkan semua informasi.
+
+Gunakan prinsip:
+
+```text
+HOME = START PLAYING
+
+PLAY = CHOOSE GAME MODE
+
+REWARDS = DAILY BONUS + MISSIONS + REWARD TRACK
+
+SHOP = CUSTOMIZATION
+
+FRIENDS = SOCIAL
+
+PROFILE = PLAYER + SETTINGS
+```
+
+Ini adalah **source of truth untuk information architecture** project.
+
+Jika terdapat konflik dengan struktur sebelumnya, gunakan struktur pada prompt ini.
+
+---
+
+# 30. IMPLEMENTATION PRIORITY
+
+Kerjakan dalam urutan:
+
+```text
+1. Routing
+2. Primary Navigation
+3. Clean Home
+4. Play Menu
+5. VS Bot Setup
+6. Local Setup
+7. Game Screen
+8. Result Screen
+9. Rewards
+10. Shop
+11. Friends
+12. Profile
+13. Settings
+```
+
+Jangan implementasikan online multiplayer dulu.
+
+Fokus sampai:
+
+```text
+HOME
+→ PLAY
+→ VS BOT
+→ GAME
+→ RESULT
+```
+
+benar-benar berjalan end-to-end.
+
+Setelah flow tersebut stabil, baru implementasikan menu lainnya.

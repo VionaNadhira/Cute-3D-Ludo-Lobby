@@ -1,0 +1,1402 @@
+Lakukan tahap berikutnya pada project Ludo web yang sedang dibuat.
+
+Jangan mengubah core game rules yang sudah ada. Fokus utama sekarang adalah membuat **gameplay terasa hidup, responsif, satisfying, dan seperti premium mobile board game** melalui:
+
+* sound effects
+* dice animation
+* token animation
+* turn feedback
+* capture effects
+* home effects
+* win/lose animation
+* UI feedback
+* camera/board feedback
+* bot presentation
+
+Visual tetap menggunakan style:
+
+**cute 3D cartoon board game**
+
+dengan karakter original, toy-like world, glossy materials, rounded UI, soft lighting, colorful environment, dan polished mobile-game quality.
+
+---
+
+# 1. GAMEPLAY FEEDBACK SYSTEM
+
+Buat satu sistem terpusat untuk gameplay effects.
+
+Struktur:
+
+```text
+src/
+├── game/
+│   ├── engine/
+│   ├── bot/
+│   └── events/
+│
+├── audio/
+│   ├── AudioManager.ts
+│   ├── SoundEffect.ts
+│   └── sounds/
+│
+├── effects/
+│   ├── DiceEffect.ts
+│   ├── TokenEffect.ts
+│   ├── CaptureEffect.ts
+│   ├── TurnEffect.ts
+│   └── VictoryEffect.ts
+│
+└── components/
+    └── game/
+```
+
+Game Engine tetap menjadi sumber kebenaran.
+
+Effects hanya merespons event.
+
+Jangan memasukkan visual animation logic ke dalam game rules.
+
+Gunakan architecture:
+
+```text
+Game Engine
+     ↓
+Game Event
+     ↓
+Animation / Sound / UI Feedback
+```
+
+Contoh:
+
+```text
+ROLL_DICE
+    ↓
+DiceRolledEvent
+    ↓
+Dice Animation
+    +
+Dice Sound
+```
+
+---
+
+# 2. SOUND SYSTEM
+
+Buat:
+
+```text
+AudioManager
+```
+
+yang menangani seluruh suara game.
+
+Minimal mendukung:
+
+```ts
+playSfx(name)
+playMusic(name)
+setSfxVolume(value)
+setMusicVolume(value)
+muteSfx()
+muteMusic()
+```
+
+Jangan membuat setiap React component membuat Audio object sendiri.
+
+Semua audio harus melalui AudioManager.
+
+---
+
+# 3. SOUND EFFECT LIST
+
+Siapkan sound event berikut:
+
+### UI
+
+```text
+button_click
+button_hover
+menu_open
+menu_close
+```
+
+### Dice
+
+```text
+dice_pickup
+dice_shake
+dice_roll
+dice_land
+```
+
+### Token
+
+```text
+token_select
+token_move
+token_step
+token_land
+token_enter_board
+token_enter_home
+```
+
+### Gameplay
+
+```text
+capture
+safe_cell
+extra_turn
+invalid_move
+turn_start
+```
+
+### Game
+
+```text
+countdown
+victory
+defeat
+reward
+```
+
+Audio tidak boleh terasa keras atau mengganggu.
+
+Gunakan short, playful, toy-like sounds.
+
+---
+
+# 4. AUDIO FALLBACK
+
+Jika asset audio belum tersedia, jangan membuat application error.
+
+Buat fallback behavior.
+
+Contoh:
+
+```text
+sound file missing
+↓
+skip sound
+↓
+animation tetap berjalan
+```
+
+Jangan sampai:
+
+```text
+missing .mp3
+↓
+game crash
+```
+
+---
+
+# 5. DICE ROLL ANIMATION
+
+Dice harus menjadi salah satu feedback paling satisfying dalam game.
+
+Ketika player menekan dice:
+
+```text
+PRESS
+ ↓
+dice scale down sedikit
+ ↓
+dice rotate
+ ↓
+dice bounce
+ ↓
+random face animation
+ ↓
+final result
+ ↓
+bounce
+ ↓
+settle
+```
+
+Gunakan:
+
+```text
+300-700ms
+```
+
+untuk keseluruhan animation.
+
+Jangan terlalu lama.
+
+Dice harus terasa seperti benar-benar dilempar.
+
+---
+
+# 6. DICE VISUAL
+
+Saat rolling:
+
+```text
+dice.rotate
+dice.scale
+dice.position
+```
+
+berubah secara cepat.
+
+Gunakan easing yang natural.
+
+Contoh sequence:
+
+```text
+scale: 1
+→ 0.88
+→ 1.08
+→ 1
+
+rotation:
+0
+→ random rotation
+→ random rotation
+→ final
+```
+
+Hasil akhir harus berhenti pada angka yang benar.
+
+Jangan membuat animation result berbeda dari actual game state.
+
+---
+
+# 7. DICE RESULT
+
+Setelah dice berhenti:
+
+```text
+ROLL
+  ↓
+3
+```
+
+angka hasil harus mendapatkan sedikit feedback.
+
+Contoh:
+
+```text
+dice bounce
++
+small glow
++
+number pop
++
+short sound
+```
+
+Jika mendapatkan:
+
+```text
+6
+```
+
+gunakan feedback yang lebih kuat.
+
+Contoh:
+
+```text
+BIG BOUNCE
++
+sparkles
++
+special sound
+```
+
+Jangan berlebihan.
+
+---
+
+# 8. ROLL 6 EFFECT
+
+Ketika player mendapatkan 6:
+
+```text
+6!
+```
+
+muncul sebentar di sekitar dice.
+
+Tambahkan:
+
+* scale pop
+* small particles
+* sparkle
+* positive sound
+
+Kemudian tampilkan:
+
+```text
+EXTRA TURN
+```
+
+dengan animation singkat.
+
+Contoh:
+
+```text
++----------------+
+|   EXTRA TURN   |
++----------------+
+```
+
+Popup hanya berlangsung sekitar:
+
+```text
+500-900ms
+```
+
+---
+
+# 9. TOKEN SELECTION
+
+Ketika player memilih token:
+
+```text
+token scale
+1
+→ 1.08
+→ 1
+```
+
+Tambahkan:
+
+* subtle bounce
+* glow/ring
+* small shadow change
+
+Token yang valid untuk dimainkan harus terlihat berbeda.
+
+Contoh:
+
+```text
+valid token
+↓
+small bounce
+↓
+subtle pulse
+```
+
+Token invalid:
+
+```text
+no movement
++
+small shake
++
+invalid_move sound
+```
+
+Jangan membuat invalid move terasa menghukum.
+
+---
+
+# 10. VALID MOVE HIGHLIGHT
+
+Setelah dice selesai:
+
+```text
+Game Engine
+↓
+validMoves
+↓
+highlight tokens
+```
+
+Token yang bisa dipilih:
+
+```text
+pulse
+bounce
+small glow
+```
+
+Token yang tidak valid:
+
+```text
+normal state
+```
+
+Jangan melakukan highlight berdasarkan posisi visual.
+
+Gunakan game state.
+
+---
+
+# 11. TOKEN MOVEMENT
+
+Token jangan langsung teleport.
+
+Jika token bergerak 5 langkah:
+
+```text
+START
+ ↓
+STEP 1
+ ↓
+STEP 2
+ ↓
+STEP 3
+ ↓
+STEP 4
+ ↓
+STEP 5
+ ↓
+LAND
+```
+
+Setiap step memiliki:
+
+* small bounce
+* short movement sound
+* slight squash/stretch
+
+Contoh timing:
+
+```text
+80-140ms per step
+```
+
+Sesuaikan dengan jumlah langkah.
+
+Jangan membuat movement terlalu lambat.
+
+---
+
+# 12. TOKEN MOVEMENT SOUND
+
+Jangan memainkan sound yang sama terlalu keras setiap frame.
+
+Gunakan variasi ringan:
+
+```text
+step_01
+step_02
+step_03
+```
+
+atau pitch variation jika engine audio mendukung.
+
+Contoh:
+
+```text
+token_step
+pitch 0.95
+token_step
+pitch 1.0
+token_step
+pitch 1.05
+```
+
+Tujuannya agar movement terasa hidup.
+
+---
+
+# 13. TOKEN ENTER BOARD
+
+Ketika token keluar dari yard:
+
+```text
+YARD
+ ↓
+bounce
+ ↓
+spin sedikit
+ ↓
+land on start cell
+```
+
+Tambahkan:
+
+```text
+pop sound
++
+small particles
+```
+
+Token harus terasa seperti "spawn" ke board.
+
+---
+
+# 14. TOKEN CAPTURE
+
+Capture harus memiliki feedback paling jelas setelah dice.
+
+Sequence:
+
+```text
+Token reaches opponent
+        ↓
+small pause
+        ↓
+capture effect
+        ↓
+opponent token bounce
+        ↓
+opponent token returns to yard
+```
+
+Tambahkan:
+
+* impact effect
+* small particles
+* squash/stretch
+* short capture sound
+* slight board shake
+
+Jangan menggunakan efek visual yang terlalu agresif.
+
+Style tetap cute.
+
+---
+
+# 15. CAPTURE EFFECT
+
+Contoh visual:
+
+```text
+TOKEN
+  ↓
+impact ring
+  ↓
+small star particles
+  ↓
+token pop
+  ↓
+return to yard
+```
+
+Gunakan warna berdasarkan token/player.
+
+Particle count jangan terlalu banyak.
+
+Target:
+
+```text
+10-20 particles
+```
+
+atau sesuaikan performa.
+
+---
+
+# 16. SAFE CELL EFFECT
+
+Jika token berhenti di safe cell:
+
+tambahkan feedback kecil:
+
+```text
+soft sparkle
++
+short sound
+```
+
+Tidak perlu popup besar.
+
+Safe cell harus terasa special tetapi tetap subtle.
+
+---
+
+# 17. TOKEN ENTER HOME
+
+Ketika token mencapai HOME:
+
+```text
+token movement
+ ↓
+final bounce
+ ↓
+home glow
+ ↓
+sparkles
+ ↓
+reward sound
+```
+
+Tambahkan:
+
+```text
+HOME!
+```
+
+atau visual equivalent.
+
+Token dapat melakukan:
+
+```text
+scale 1
+→ 1.15
+→ 1
+```
+
+dengan easing.
+
+---
+
+# 18. TURN TRANSITION
+
+Saat turn berganti:
+
+```text
+PLAYER TURN
+```
+
+atau:
+
+```text
+BOT TURN
+```
+
+tampilkan feedback singkat.
+
+Contoh:
+
+```text
+YOUR TURN
+```
+
+dengan:
+
+* slide/fade
+* small bounce
+* turn sound
+
+Jangan membuat popup memenuhi layar.
+
+---
+
+# 19. BOT TURN
+
+Bot harus memiliki presentation yang sama seperti human.
+
+Flow:
+
+```text
+BOT TURN
+ ↓
+turn indicator
+ ↓
+bot rolls dice
+ ↓
+dice animation
+ ↓
+thinking delay
+ ↓
+valid token highlight
+ ↓
+bot selects token
+ ↓
+token animation
+```
+
+Bot tidak boleh terlihat seperti:
+
+```text
+state instantly changes
+```
+
+Walaupun decision sebenarnya langsung dihitung.
+
+Gunakan presentation delay:
+
+```text
+500-1000ms
+```
+
+untuk thinking.
+
+---
+
+# 20. PLAYER TURN CONTROL
+
+Saat dice sedang rolling:
+
+```text
+disable dice button
+disable token selection
+```
+
+Saat token sedang bergerak:
+
+```text
+disable all gameplay input
+```
+
+Setelah animation selesai:
+
+```text
+enable next valid action
+```
+
+Pastikan animation tidak menyebabkan duplicate input.
+
+---
+
+# 21. GAMEPLAY CAMERA FEEDBACK
+
+Jika board menggunakan canvas/WebGL:
+
+Tambahkan feedback camera yang sangat subtle.
+
+Contoh capture:
+
+```text
+camera scale
+1
+→ 1.01
+→ 1
+```
+
+atau micro shake.
+
+Untuk kemenangan:
+
+```text
+small zoom
++
+celebration
+```
+
+Jangan menggunakan camera shake keras.
+
+Game tetap harus nyaman dimainkan.
+
+---
+
+# 22. TURN INDICATOR
+
+Buat indikator turn yang jelas.
+
+Contoh:
+
+```text
+YOUR TURN
+ROLL THE DICE
+```
+
+Saat bot:
+
+```text
+BOT'S TURN
+THINKING...
+```
+
+Setelah dice:
+
+```text
+YOU ROLLED 5
+```
+
+Feedback harus berubah sesuai game state.
+
+---
+
+# 23. DICE BUTTON STATE
+
+Dice button memiliki state:
+
+```text
+READY
+ROLLING
+DISABLED
+WAITING
+```
+
+### READY
+
+```text
+idle bounce
+subtle shine
+```
+
+### ROLLING
+
+```text
+pressed
+animated
+disabled
+```
+
+### DISABLED
+
+```text
+reduced interaction
+```
+
+Jangan membuat button tetap terlihat clickable ketika tidak boleh ditekan.
+
+---
+
+# 24. MICRO INTERACTIONS
+
+Tambahkan micro interaction pada:
+
+```text
+buttons
+dice
+tokens
+turn indicator
+result cards
+```
+
+Gunakan:
+
+```text
+hover
+press
+release
+bounce
+scale
+fade
+slide
+```
+
+Tetapi hindari animasi berlebihan.
+
+Target:
+
+**polished mobile game**
+
+bukan:
+
+**UI penuh animasi.**
+
+---
+
+# 25. WIN CONDITION
+
+Ketika player memenangkan game:
+
+Jangan langsung berpindah ke Result Screen.
+
+Buat celebration sequence.
+
+```text
+LAST TOKEN ENTER HOME
+        ↓
+short pause
+        ↓
+victory animation
+        ↓
+celebration
+        ↓
+RESULT SCREEN
+```
+
+Durasi sekitar:
+
+```text
+2-4 seconds
+```
+
+---
+
+# 26. VICTORY ANIMATION
+
+Saat menang:
+
+```text
+BOARD
+ ↓
+slight zoom
+ ↓
+confetti
+ ↓
+sparkles
+ ↓
+character celebration
+ ↓
+VICTORY
+```
+
+Character dapat:
+
+* jump
+* spin sedikit
+* wave
+* celebrate
+
+Gunakan animation yang cute dan playful.
+
+Jangan menggunakan cinematic panjang.
+
+---
+
+# 27. VICTORY TEXT
+
+Tampilkan:
+
+```text
+YOU WIN!
+```
+
+dengan:
+
+```text
+scale
+0.6
+→ 1.15
+→ 1
+```
+
+Tambahkan:
+
+```text
+shine
++
+sparkles
+```
+
+Kemudian:
+
+```text
++250 COINS
++100 XP
+```
+
+muncul satu per satu.
+
+---
+
+# 28. DEFEAT ANIMATION
+
+Jika player kalah:
+
+```text
+BOT WINS
+```
+
+Gunakan animation yang lebih sederhana.
+
+Contoh:
+
+```text
+board dim sedikit
+ ↓
+bot celebration
+ ↓
+BOT WINS
+ ↓
+reward/result
+```
+
+Jangan membuat kekalahan terasa menyebalkan.
+
+Tetap cute dan ringan.
+
+---
+
+# 29. RESULT REWARD ANIMATION
+
+Pada Result Screen:
+
+```text
+COINS EARNED
++250
+```
+
+Jangan langsung muncul.
+
+Sequence:
+
+```text
+Result Screen
+ ↓
+YOU WIN
+ ↓
++250 COINS
+ ↓
++100 XP
+```
+
+Gunakan count-up animation jika mudah diterapkan.
+
+Contoh:
+
+```text
+0
+50
+100
+150
+200
+250
+```
+
+durasi sekitar:
+
+```text
+500-800ms
+```
+
+---
+
+# 30. PLAY AGAIN
+
+Ketika user menekan:
+
+```text
+PLAY AGAIN
+```
+
+jangan reload seluruh browser.
+
+Reset game state dengan benar:
+
+```text
+Result
+ ↓
+new Game Session
+ ↓
+same configuration
+ ↓
+new board state
+```
+
+Untuk VS Bot:
+
+```text
+same player
+same bot
+same difficulty
+```
+
+kemudian langsung mulai game baru.
+
+---
+
+# 31. GAME EVENT BUS
+
+Jika belum ada, buat event system sederhana.
+
+Contoh:
+
+```ts
+type GameEvent =
+  | { type: 'DICE_ROLLED'; value: number }
+  | { type: 'TOKEN_SELECTED'; tokenId: string }
+  | { type: 'TOKEN_MOVED'; tokenId: string; steps: number }
+  | { type: 'TOKEN_CAPTURED'; tokenId: string }
+  | { type: 'TOKEN_ENTERED_HOME'; tokenId: string }
+  | { type: 'TURN_CHANGED'; playerId: string }
+  | { type: 'EXTRA_TURN'; playerId: string }
+  | { type: 'GAME_WON'; playerId: string };
+```
+
+Effects subscribe ke event tersebut.
+
+Contoh:
+
+```text
+DICE_ROLLED
+ ├── Dice Animation
+ ├── Dice Sound
+ └── Result Feedback
+
+TOKEN_CAPTURED
+ ├── Capture Animation
+ ├── Capture Sound
+ └── Board Micro Shake
+```
+
+---
+
+# 32. IMPORTANT: GAME LOGIC MUST STAY DETERMINISTIC
+
+Animation tidak boleh menentukan game result.
+
+SALAH:
+
+```text
+animation selesai
+↓
+baru menentukan token position
+```
+
+BENAR:
+
+```text
+Game Engine menentukan result
+↓
+state berubah
+↓
+animation menampilkan perubahan tersebut
+```
+
+Game state tetap menjadi source of truth.
+
+---
+
+# 33. ANIMATION SAFETY
+
+Semua animation harus bisa dihentikan/reset.
+
+Jangan meninggalkan:
+
+```text
+orphaned timers
+```
+
+atau:
+
+```text
+duplicate animation
+```
+
+ketika:
+
+```text
+game reset
+play again
+quit game
+route change
+```
+
+Bersihkan:
+
+```text
+timeouts
+intervals
+animation listeners
+audio listeners
+```
+
+---
+
+# 34. PERFORMANCE
+
+Gameplay harus tetap smooth.
+
+Target:
+
+```text
+60 FPS
+```
+
+Hindari:
+
+* terlalu banyak particles
+* terlalu banyak DOM animation
+* audio object berulang
+* setInterval untuk setiap token
+* React re-render seluruh board setiap frame
+
+Jika board menggunakan PixiJS, animasikan object Pixi secara langsung dan sinkronkan hanya state yang diperlukan.
+
+---
+
+# 35. SOUND SETTINGS
+
+Integrasikan dengan Settings yang sudah ada.
+
+Settings:
+
+```text
+SOUND
+ON / OFF
+
+MUSIC
+ON / OFF
+
+SFX VOLUME
+0-100
+
+MUSIC VOLUME
+0-100
+```
+
+Jika user mematikan SFX:
+
+```text
+semua gameplay SFX berhenti
+```
+
+Animation tetap berjalan.
+
+Jika music off:
+
+```text
+music berhenti
+```
+
+---
+
+# 36. MOBILE FEEDBACK
+
+Pastikan semua interaction nyaman di mobile.
+
+Dice:
+
+```text
+large touch target
+```
+
+Token:
+
+```text
+large enough to tap
+```
+
+Jangan bergantung pada hover.
+
+Semua interaction utama harus bekerja dengan:
+
+```text
+touch
+click
+```
+
+---
+
+# 37. OPTIONAL HAPTIC FEEDBACK
+
+Jika browser mendukung:
+
+```ts
+navigator.vibrate()
+```
+
+gunakan secara ringan.
+
+Contoh:
+
+```text
+dice roll
+→ 10ms
+
+capture
+→ 15ms
+
+victory
+→ 20ms
+```
+
+Harus memiliki feature detection.
+
+Jangan membuat game error jika vibration tidak tersedia.
+
+---
+
+# 38. FINAL GAMEPLAY FEEL
+
+Target pengalaman:
+
+```text
+Tap Dice
+    ↓
+CLICK
+    ↓
+Dice Shake
+    ↓
+ROLL SOUND
+    ↓
+Dice Bounce
+    ↓
+Result
+    ↓
+Valid Tokens Highlight
+    ↓
+Tap Token
+    ↓
+Token Bounce
+    ↓
+Step
+Step
+Step
+    ↓
+Landing
+    ↓
+Capture / Home / Normal
+    ↓
+Turn Feedback
+    ↓
+Next Turn
+```
+
+Semua harus terasa:
+
+**fast + playful + tactile + polished**
+
+bukan lambat atau berat.
+
+---
+
+# 39. IMPLEMENTATION PRIORITY
+
+Kerjakan berurutan:
+
+### Priority 1
+
+AudioManager
+
+### Priority 2
+
+Dice animation + sound
+
+### Priority 3
+
+Token selection + movement animation
+
+### Priority 4
+
+Turn feedback
+
+### Priority 5
+
+Capture effect
+
+### Priority 6
+
+Home/goal effect
+
+### Priority 7
+
+Bot presentation
+
+### Priority 8
+
+Victory / defeat sequence
+
+### Priority 9
+
+Result reward animation
+
+### Priority 10
+
+Micro interactions + optional haptic
+
+---
+
+# 40. ACCEPTANCE CRITERIA
+
+Implementasi dianggap berhasil jika:
+
+* Dice memiliki rolling animation.
+* Dice berhenti pada hasil yang benar.
+* Dice memiliki sound feedback.
+* Roll 6 memiliki feedback khusus.
+* Token tidak teleport saat bergerak.
+* Token bergerak step-by-step.
+* Token valid memiliki visual highlight.
+* Token invalid tidak dapat dipilih.
+* Capture memiliki animation dan sound.
+* Token masuk HOME memiliki feedback.
+* Pergantian turn memiliki feedback.
+* Bot terlihat melakukan roll dan memilih token secara natural.
+* Bot memiliki thinking delay.
+* Player tidak dapat melakukan input saat animation berlangsung.
+* Victory memiliki celebration.
+* Defeat memiliki animation.
+* Result reward memiliki animation.
+* Play Again tidak reload browser.
+* Audio dapat diaktifkan/dimatikan melalui Settings.
+* Missing audio asset tidak menyebabkan crash.
+* Tidak ada duplicate timers/listeners.
+* Tidak ada console errors.
+* Gameplay tetap responsive di desktop dan mobile.
+* Core game logic tetap terpisah dari presentation.
+* Animation tidak pernah mengubah hasil game secara langsung.
+* Game Engine tetap menjadi source of truth.

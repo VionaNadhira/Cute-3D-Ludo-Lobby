@@ -1,35 +1,39 @@
+import { Link } from 'wouter';
 import { Bell, Settings } from 'lucide-react';
+import { usePlayerData } from '@/game/PlayerDataContext';
 
-type PlayerHeaderProps = {
-  coins: number;
-  onNotice: (message: string) => void;
-};
+export function PlayerHeader({ onNotice }: { onNotice: (message: string) => void }) {
+  const { coins, gems, wins, matchesPlayed, xp } = usePlayerData();
+  const level = 22 + Math.floor(xp / 1000);
+  const winRate = matchesPlayed ? Math.round((wins / matchesPlayed) * 100) : 0;
 
-export function PlayerHeader({ coins, onNotice }: PlayerHeaderProps) {
   return (
-    <header className="topbar">
-      <div className="profile-wrap" data-testid="profile-player">
-        <div className="profile-avatar" aria-label="Pip player avatar">P</div>
-        <div className="level-block">
-          <div className="level-line">LV. 24</div>
-          <div className="level-track" aria-label="Level progress 68%">
-            <div className="level-fill" />
-          </div>
-        </div>
-      </div>
-      <div className="resource-row">
+    <header className="global-header">
+      <Link href="/" className="brand-lockup" data-testid="link-ludo-home" aria-label="Ludo World home">
+        <span className="brand-mark">L</span>
+        <span className="brand-words"><b>LUDO</b><small>PIP&apos;S PLAYFIELD</small></span>
+      </Link>
+      <div className="header-resources" aria-label="Player resources">
         <div className="resource-pill" data-testid="value-coins">
-          <span className="resource-icon">C</span><span className="resource-value">{coins.toLocaleString('en-US')}</span>
-          <button className="add-resource" aria-label="Add coins" data-testid="button-add-coins" onClick={() => onNotice('Coin shop is warming up!')}>+</button>
+          <span className="resource-icon">C</span>
+          <span className="resource-value">{coins.toLocaleString('en-US')}</span>
+          <button className="resource-plus" aria-label="Open coin shop" data-testid="button-add-coins" onClick={() => onNotice('Coin bundles are coming soon.')}>+</button>
         </div>
         <div className="resource-pill" data-testid="value-gems">
-          <span className="resource-icon gem">D</span><span className="resource-value">320</span>
-          <button className="add-resource" aria-label="Add gems" data-testid="button-add-gems" onClick={() => onNotice('Gem bundles are coming soon!')}>+</button>
+          <span className="resource-icon gem">D</span>
+          <span className="resource-value">{gems.toLocaleString('en-US')}</span>
+          <button className="resource-plus" aria-label="Open gem shop" data-testid="button-add-gems" onClick={() => onNotice('Gem bundles are coming soon.')}>+</button>
         </div>
       </div>
-      <div className="header-actions">
-        <button className="round-action" aria-label="Notifications" data-testid="button-notifications" onClick={() => onNotice('You are all caught up!')}><Bell size={18} strokeWidth={2.8}/><span className="dot"/></button>
-        <button className="round-action" aria-label="Settings" data-testid="button-settings" onClick={() => onNotice('Settings will be here soon.')}><Settings size={18} strokeWidth={2.8}/></button>
+      <div className="header-player">
+        <Link href="/profile" className="header-profile-link" data-testid="link-profile-header">
+          <span className="header-avatar" aria-hidden="true">P</span>
+          <span className="header-player-copy"><b>LV. {level}</b><small>{winRate}% win rate</small></span>
+        </Link>
+        <button className="header-icon-button" aria-label="Notifications" data-testid="button-notifications" onClick={() => onNotice('You are all caught up!')}>
+          <Bell size={19}/><i aria-hidden="true"/>
+        </button>
+        <Link href="/settings" className="header-icon-button" aria-label="Settings" data-testid="link-settings-header"><Settings size={19}/></Link>
       </div>
     </header>
   );

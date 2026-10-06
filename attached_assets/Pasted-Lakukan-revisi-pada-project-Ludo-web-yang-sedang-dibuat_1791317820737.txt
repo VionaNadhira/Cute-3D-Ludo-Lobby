@@ -1,0 +1,954 @@
+Lakukan revisi pada project Ludo web yang sedang dibuat.
+
+Pertahankan style visual **cute 3D cartoon board game**, dengan karakter original, toy-like environment, rounded UI, glossy material, soft shadows, dan kualitas seperti premium mobile game.
+
+Namun sekarang lakukan perubahan besar pada **information architecture**.
+
+# 1. HOME HARUS LEBIH CLEAN
+
+Jangan tampilkan semua informasi game di halaman Home.
+
+Saat ini Home terlalu penuh dengan:
+
+* Daily Bonus
+* Today's Mission
+* Toy Shop
+* Friends
+* Reward Track
+
+**Hapus seluruh section tersebut dari Home Screen.**
+
+Home hanya berfungsi sebagai **game lobby utama**.
+
+Home harus memiliki fokus:
+
+```text
+LOGO
+
+PLAYER / RESOURCE HEADER
+
+        MAIN CHARACTER
+
+       PLAY NOW
+
+ QUICK MATCH
+ PLAY WITH FRIENDS
+ PLAY LOCAL
+ VS BOT
+
+minimal decorative elements
+
+BOTTOM NAVIGATION
+```
+
+Home tidak boleh mempunyai:
+
+```text
+DAILY BONUS
+TODAY'S MISSION
+TOY SHOP
+FRIENDS LIST
+REWARD TRACK
+```
+
+secara langsung.
+
+---
+
+# 2. HOME SCREEN HIERARCHY
+
+Prioritas Home:
+
+### 1. Character / World
+
+Karakter maskot utama tetap menjadi visual centerpiece.
+
+### 2. PLAY NOW
+
+CTA terbesar.
+
+### 3. Game Modes
+
+Berikan beberapa mode:
+
+```text
+QUICK MATCH
+VS BOT
+FRIENDS
+LOCAL
+```
+
+### 4. Navigation
+
+Navigasi menuju menu lain.
+
+Home harus terasa seperti:
+
+**game lobby**
+
+bukan:
+
+**dashboard pemain**.
+
+---
+
+# 3. PLAY NOW
+
+Tombol utama tetap:
+
+```text
+PLAY NOW
+```
+
+Tetapi sekarang tombol tersebut membuka **Game Mode Selection** atau langsung masuk ke mode default.
+
+Jika belum ada multiplayer online:
+
+gunakan:
+
+```text
+PLAY NOW
+↓
+GAME MODE
+↓
+VS BOT
+```
+
+untuk sementara.
+
+---
+
+# 4. VS BOT MODE
+
+Tambahkan mode:
+
+**VS BOT**
+
+Mode ini sangat penting karena digunakan untuk testing gameplay tanpa membutuhkan pemain lain.
+
+Tampilan button:
+
+```text
+VS BOT
+Play against computer
+```
+
+Gunakan icon:
+
+* robot
+* AI
+* game controller
+
+Jangan menggunakan icon yang terlihat seperti software developer/debugging.
+
+Harus tetap terasa sebagai game feature.
+
+---
+
+# 5. VS BOT SETUP
+
+Ketika user memilih VS BOT, tampilkan halaman:
+
+```text
+VS BOT
+
+Choose your opponent
+
+[ EASY ]
+[ NORMAL ]
+[ HARD ]
+
+Choose players
+
+[ 1 PLAYER ]
+[ 2 PLAYERS ]
+[ 3 PLAYERS ]
+
+YOUR CHARACTER
+
+[ RED ]
+
+START GAME
+```
+
+Untuk versi pertama, cukup implementasikan:
+
+```text
+Player vs Bot
+```
+
+dengan:
+
+```text
+1 human
++
+1 bot
+```
+
+Bot menggunakan warna berbeda dari player.
+
+---
+
+# 6. BOT SYSTEM
+
+Buat AI sederhana tetapi benar-benar dapat bermain.
+
+Buat:
+
+```text
+src/game/bot/
+├── BotPlayer.ts
+├── BotStrategy.ts
+└── BotDifficulty.ts
+```
+
+Bot harus:
+
+1. menunggu gilirannya
+2. melakukan roll dice
+3. mendapatkan valid moves
+4. memilih token
+5. melakukan movement
+6. melakukan capture jika tersedia
+7. melanjutkan extra turn
+8. menang jika semua token masuk HOME
+
+Bot tidak boleh memanipulasi state secara langsung.
+
+Bot harus menggunakan action yang sama seperti player:
+
+```text
+ROLL_DICE
+SELECT_TOKEN
+```
+
+Dengan demikian:
+
+```text
+Human
+   ↓
+Game Engine
+
+Bot
+   ↓
+Game Engine
+```
+
+keduanya menggunakan game engine yang sama.
+
+---
+
+# 7. BOT DECISION LOGIC
+
+Jangan membuat bot benar-benar random.
+
+Gunakan priority system.
+
+Contoh:
+
+```text
+1. Move token yang bisa mencapai HOME
+2. Capture opponent
+3. Move token keluar dari YARD
+4. Move token yang paling dekat HOME
+5. Random legal move
+```
+
+Implementasikan fungsi:
+
+```ts
+chooseBestMove(
+  gameState,
+  validMoves
+)
+```
+
+Bot tidak boleh memilih token yang invalid.
+
+---
+
+# 8. BOT DIFFICULTY
+
+Buat tiga tingkat:
+
+### EASY
+
+Prioritas:
+
+* mostly random legal move
+* sedikit strategic decision
+
+### NORMAL
+
+Prioritas:
+
+* HOME
+* capture
+* exit yard
+* progress
+
+### HARD
+
+Prioritas:
+
+* HOME
+* capture
+* avoid dangerous positions
+* maximize progress
+* pilih move berdasarkan evaluasi board
+
+Untuk tahap awal, **EASY dan NORMAL wajib bekerja**.
+
+HARD dapat menggunakan strategy yang lebih sederhana terlebih dahulu, tetapi architecture harus sudah mendukung difficulty.
+
+---
+
+# 9. BOT THINKING DELAY
+
+Jangan membuat bot bergerak langsung.
+
+Setelah dice:
+
+```text
+Bot rolls
+   ↓
+500-1000ms thinking
+   ↓
+highlight selected token
+   ↓
+move token
+```
+
+Tambahkan sedikit variasi delay agar tidak terasa seperti script instan.
+
+Jangan menggunakan delay sebagai bagian dari game rules.
+
+Delay hanya bagian dari presentation layer.
+
+---
+
+# 10. DAILY BONUS
+
+Pindahkan Daily Bonus ke menu tersendiri.
+
+Menu:
+
+```text
+REWARDS
+```
+
+Di dalamnya:
+
+```text
+DAILY BONUS
+
+DAY 01
+DAY 02
+DAY 03
+DAY 04
+DAY 05
+DAY 06
+DAY 07
+
+DAY 07
++500
+
+CLAIMED
+
+[Pip the fox holding a lucky die]
+```
+
+Jangan tampilkan Daily Bonus di Home.
+
+Asset Pip yang saat ini digunakan:
+
+```text
+pip-mascot-cutout.png
+```
+
+Pertahankan asset tersebut jika memang sudah tersedia di project.
+
+Pip hanya digunakan pada Rewards/Daily Bonus section, bukan sebagai permanent Home section.
+
+---
+
+# 11. MISSION MENU
+
+Pindahkan:
+
+```text
+TODAY'S MISSION
+
+Win 2 matches
+1 / 2 complete
+
++250
+```
+
+ke menu:
+
+```text
+MISSIONS
+```
+
+Home tidak menampilkan mission card.
+
+Halaman Missions:
+
+```text
+MISSIONS
+
+TODAY
+
+Win 2 matches
+████████░░
+1 / 2
+
++250
+
+[ CLAIM / IN PROGRESS ]
+```
+
+Tambahkan beberapa mission tambahan sebagai placeholder:
+
+```text
+Roll a 6 three times
+Play 3 games
+Capture 2 tokens
+```
+
+Gunakan data-driven configuration.
+
+---
+
+# 12. TOY SHOP
+
+Pindahkan:
+
+```text
+TOY SHOP
+
+Lucky dice
+Berry token
+Tiny crown
+Candy park
+```
+
+ke:
+
+```text
+SHOP
+```
+
+Home tidak boleh menampilkan shop preview.
+
+Shop menjadi full menu.
+
+Struktur:
+
+```text
+SHOP
+
+DICE
+[ Lucky Dice ]
+
+TOKENS
+[ Berry Token ]
+
+AVATARS
+[ Tiny Crown ]
+
+BOARDS
+[ Candy Park ]
+```
+
+Gunakan visual 3D cartoon.
+
+Jangan membuatnya seperti ecommerce website.
+
+---
+
+# 13. FRIENDS
+
+Pindahkan:
+
+```text
+FRIENDS
+
+Alex
+ONLINE
+
+Kevin
+PLAYING
+
+Mia
+ONLINE
+
++ INVITE
+```
+
+ke:
+
+```text
+FRIENDS
+```
+
+Home hanya memiliki tombol/navigation menuju Friends.
+
+Friends page:
+
+```text
+FRIENDS
+
+ONLINE
+
+[ A ] Alex
+ONLINE
+
+[ K ] Kevin
+PLAYING
+
+[ M ] Mia
+ONLINE
+
++ INVITE FRIEND
+```
+
+Tambahkan search/invite hanya jika diperlukan.
+
+---
+
+# 14. REWARD TRACK
+
+Pindahkan:
+
+```text
+REWARD TRACK
+
+Play 3 games
+2 / 3 progress
+
+DETAILS
+```
+
+ke:
+
+```text
+REWARDS
+```
+
+Halaman Rewards dapat memiliki:
+
+```text
+DAILY BONUS
+```
+
+dan:
+
+```text
+REWARD TRACK
+```
+
+dalam satu halaman.
+
+Contoh:
+
+```text
+REWARDS
+
+DAILY BONUS
+
+DAY 07
++500
+CLAIMED
+
+----------------
+
+REWARD TRACK
+
+Play 3 games
+
+████████░░
+2 / 3
+
+NEXT REWARD
++1000 COINS
+```
+
+---
+
+# 15. NAVIGATION STRUCTURE
+
+Gunakan navigation yang jelas.
+
+Desktop:
+
+```text
+HOME
+PLAY
+REWARDS
+MISSIONS
+SHOP
+FRIENDS
+PROFILE
+```
+
+Mobile:
+
+```text
+HOME
+PLAY
+REWARDS
+SHOP
+PROFILE
+```
+
+Menu yang lebih jarang digunakan dapat berada di More menu.
+
+Jangan menampilkan terlalu banyak icon di mobile.
+
+---
+
+# 16. PLAY MENU
+
+Buat halaman khusus:
+
+```text
+PLAY
+```
+
+Dengan mode selection:
+
+```text
+QUICK MATCH
+
+VS BOT
+
+FRIENDS
+
+LOCAL
+```
+
+Visual setiap mode menggunakan artwork/icon yang berbeda.
+
+Prioritaskan:
+
+```text
+VS BOT
+```
+
+karena multiplayer online belum dibuat.
+
+---
+
+# 17. GAME FLOW
+
+Implementasikan flow:
+
+```text
+HOME
+ ↓
+PLAY
+ ↓
+VS BOT
+ ↓
+BOT SETUP
+ ↓
+START GAME
+ ↓
+GAME BOARD
+ ↓
+GAMEPLAY
+ ↓
+WIN / LOSE
+ ↓
+RESULT SCREEN
+ ↓
+PLAY AGAIN
+ / HOME
+```
+
+Jangan membuat user harus masuk ke multiplayer untuk menguji game.
+
+---
+
+# 18. RESULT SCREEN
+
+Setelah game selesai:
+
+```text
+YOU WIN
+```
+
+atau:
+
+```text
+BOT WINS
+```
+
+Tampilkan:
+
+```text
+Coins Earned
++250
+
+XP
++100
+
+Match Duration
+03:42
+```
+
+Tombol:
+
+```text
+PLAY AGAIN
+HOME
+```
+
+Untuk sekarang reward dapat berupa mock data.
+
+Jangan membuat backend economy dulu.
+
+---
+
+# 19. GAME STATE
+
+Pastikan game state dapat mengakomodasi:
+
+```ts
+type PlayerType =
+  | 'human'
+  | 'bot';
+
+type PlayerState = {
+  id: string;
+  type: PlayerType;
+  name: string;
+  color: PlayerColor;
+  tokens: TokenState[];
+};
+```
+
+Bot harus menjadi player biasa dari perspektif Game Engine.
+
+Perbedaan hanya pada siapa yang menghasilkan action:
+
+```text
+Human Input
+       ↓
+Game Action
+
+atau
+
+Bot Strategy
+       ↓
+Game Action
+```
+
+---
+
+# 20. UI DAN LOGIC HARUS TERPISAH
+
+Jangan melakukan:
+
+```text
+React component
+↓
+langsung mengubah token position
+```
+
+Gunakan:
+
+```text
+React
+ ↓
+Game Action
+ ↓
+Game Engine
+ ↓
+Game State
+ ↓
+React re-render
+```
+
+---
+
+# 21. HOME CLEANUP
+
+Setelah revisi, Home tidak boleh memiliki teks:
+
+```text
+DAILY BONUS
+DAY 07
++500
+CLAIMED
+
+TODAY'S MISSION
+Win 2 matches
+
+TOY SHOP
+Lucky dice
+Berry token
+Tiny crown
+Candy park
+
+FRIENDS
+Alex
+Kevin
+Mia
+
+REWARD TRACK
+Play 3 games
+```
+
+Semua informasi tersebut harus berada di menu masing-masing.
+
+Home hanya menunjukkan informasi minimum yang dibutuhkan untuk memulai permainan.
+
+---
+
+# 22. HOME FINAL COMPOSITION
+
+Target:
+
+```text
+┌──────────────────────────────────────┐
+│ LUDO             COINS   GEMS AVATAR │
+│                                      │
+│                                      │
+│             CARTOON WORLD             │
+│                                      │
+│               [PIP]                  │
+│          cute mascot + dice          │
+│                                      │
+│             ┌──────────┐             │
+│             │ PLAY NOW │             │
+│             └──────────┘             │
+│                                      │
+│       QUICK MATCH      VS BOT        │
+│                                      │
+│          FRIENDS       LOCAL          │
+│                                      │
+│                                      │
+│ HOME  PLAY  REWARDS  SHOP  PROFILE   │
+└──────────────────────────────────────┘
+```
+
+Jangan mengikuti layout ini secara pixel-perfect.
+
+Gunakan sebagai information hierarchy.
+
+---
+
+# 23. VISUAL QUALITY
+
+Home harus terasa:
+
+**cute 3D cartoon game lobby**
+
+dengan:
+
+* character centerpiece
+* miniature world
+* soft lighting
+* toy-like UI
+* dimensional buttons
+* glossy resources
+* smooth animation
+
+Tetapi Home harus jauh lebih breathable daripada sebelumnya.
+
+Gunakan whitespace.
+
+Jangan memenuhi viewport dengan card.
+
+---
+
+# 24. IMPLEMENTATION ORDER
+
+Kerjakan secara berurutan:
+
+### Phase 1
+
+Clean Home Screen.
+
+### Phase 2
+
+Create navigation.
+
+### Phase 3
+
+Create:
+
+```text
+Rewards
+Missions
+Shop
+Friends
+Play
+```
+
+### Phase 4
+
+Implement:
+
+```text
+VS BOT
+```
+
+### Phase 5
+
+Connect:
+
+```text
+VS BOT
+↓
+Game Engine
+↓
+Game Board
+```
+
+### Phase 6
+
+Test full flow:
+
+```text
+Home
+→ Play
+→ VS Bot
+→ Game
+→ Win/Lose
+→ Result
+→ Play Again
+```
+
+Jangan mengimplementasikan online multiplayer pada tahap ini.
+
+---
+
+# 25. ACCEPTANCE CRITERIA
+
+Revisi dianggap berhasil jika:
+
+* Home jauh lebih clean.
+* Daily Bonus tidak muncul di Home.
+* Missions tidak muncul di Home.
+* Shop tidak muncul di Home.
+* Friends list tidak muncul di Home.
+* Reward Track tidak muncul di Home.
+* Semua fitur tersebut tetap dapat diakses melalui menu.
+* Play menu tersedia.
+* VS BOT tersedia.
+* Bot dapat memainkan game dari awal sampai selesai.
+* Bot menggunakan Game Engine yang sama dengan player.
+* Bot hanya memilih valid moves.
+* Bot dapat mendapatkan extra turn.
+* Bot dapat melakukan capture.
+* Bot dapat mencapai HOME.
+* Bot dapat menang.
+* Result Screen muncul.
+* Play Again berfungsi.
+* Tidak ada console errors.
+* Tidak ada horizontal overflow.
+* Desktop dan mobile tetap responsive.
