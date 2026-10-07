@@ -10,9 +10,13 @@ export type LudoBoardProps = {
   validTokenIds: string[];
   tokenVisualProgress?: Record<string, number>;
   highlightedTokenId?: string | null;
+  /** Token IDs currently in their home-arrival glow state. */
+  homeTokenIds?: Set<string>;
   disabled: boolean;
   lastRoll: number | null;
   onSelectToken: (tokenId: string) => void;
+  /** Called when user taps a non-valid token during select-token phase. */
+  onInvalidTokenTap?: () => void;
 };
 
 const COLORS: BoardColor[] = ['coral', 'blue', 'gold', 'mint'];
@@ -84,9 +88,11 @@ export function LudoBoard({
   validTokenIds,
   tokenVisualProgress,
   highlightedTokenId,
+  homeTokenIds,
   disabled,
   lastRoll,
   onSelectToken,
+  onInvalidTokenTap,
 }: LudoBoardProps) {
   const currentPlayer = players.find((player) => player.id === currentPlayerId);
   const valid = new Set(validTokenIds);
@@ -173,21 +179,29 @@ export function LudoBoard({
             const canSelect = !disabled && valid.has(token.id);
             const highlighted = highlightedTokenId === token.id;
             const playerTurn = player.id === currentPlayerId;
+            const isHome = homeTokenIds?.has(token.id) ?? false;
+            // invalid tap: token exists + player's phase is select-token + token is not valid
+            const isInvalidTappable = !disabled && !canSelect && onInvalidTokenTap !== undefined;
             const tokenLabel = `${player.name}, ${COLOR_LABEL[player.color]} token ${index + 1}${progress === 57 ? ', finished' : progress < 0 ? ', in yard' : ''}`;
             return (
               <g
                 key={token.id}
-                className={`board-token token-${player.color}${canSelect ? ' is-valid' : ''}${highlighted ? ' is-highlighted' : ''}${playerTurn ? ' is-current' : ''}`}
+                className={`board-token token-${player.color}${canSelect ? ' is-valid' : ''}${highlighted ? ' is-highlighted' : ''}${playerTurn ? ' is-current' : ''}${isHome ? ' is-home-glow' : ''}`}
                 transform={`translate(${point.x} ${point.y})`}
-                role={canSelect ? 'button' : undefined}
+                role={canSelect ? 'button' : isInvalidTappable ? 'button' : undefined}
                 tabIndex={canSelect ? 0 : undefined}
                 aria-label={canSelect ? `${tokenLabel}. Select this token.` : tokenLabel}
                 aria-disabled={canSelect ? undefined : 'true'}
                 data-testid={`ludo-token-${token.id}`}
-                onClick={canSelect ? () => onSelectToken(token.id) : undefined}
+                onClick={canSelect
+                  ? () => onSelectToken(token.id)
+                  : isInvalidTappable
+                  ? onInvalidTokenTap
+                  : undefined}
                 onKeyDown={canSelect ? (event) => handleTokenKey(event, token.id, canSelect, onSelectToken) : undefined}
               >
                 {canSelect && <circle r="19" className="valid-radiance" />}
+                {isHome && <circle r="21" className="home-radiance" />}
                 <ellipse cx="0" cy="11" rx="12" ry="4" className="token-shadow" />
                 <circle r="13.5" className="token-body" />
                 <circle r="13.5" className="token-gloss" />

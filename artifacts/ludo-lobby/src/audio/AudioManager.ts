@@ -1,28 +1,43 @@
 export type SoundEffect =
-  | 'button_click' | 'menu_open' | 'menu_close'
-  | 'dice_roll' | 'dice_land' | 'token_select' | 'token_step'
-  | 'token_enter_board' | 'capture' | 'safe_cell' | 'extra_turn'
-  | 'turn_start' | 'victory' | 'defeat' | 'reward';
+  | 'button_click' | 'button_hover' | 'menu_open' | 'menu_close'
+  | 'dice_pickup' | 'dice_shake' | 'dice_roll' | 'dice_land'
+  | 'token_select' | 'token_step' | 'token_land' | 'token_enter_board' | 'token_enter_home'
+  | 'capture' | 'safe_cell' | 'extra_turn' | 'invalid_move'
+  | 'turn_start' | 'countdown'
+  | 'victory' | 'defeat' | 'reward';
 
 type AudioPrefs = { sfx: boolean; music: boolean; sfxVolume: number; musicVolume: number };
 
 const defaultPrefs: AudioPrefs = { sfx: true, music: true, sfxVolume: 42, musicVolume: 18 };
+// [frequency_hz, duration_s, waveform]
 const tones: Record<SoundEffect, [number, number, OscillatorType]> = {
-  button_click: [420, 0.045, 'sine'],
-  menu_open: [560, 0.09, 'sine'],
-  menu_close: [360, 0.08, 'sine'],
-  dice_roll: [190, 0.13, 'triangle'],
-  dice_land: [640, 0.11, 'sine'],
-  token_select: [510, 0.07, 'sine'],
-  token_step: [320, 0.035, 'triangle'],
+  // UI
+  button_click:    [420, 0.045, 'sine'],
+  button_hover:    [500, 0.025, 'sine'],
+  menu_open:       [560, 0.09,  'sine'],
+  menu_close:      [360, 0.08,  'sine'],
+  // Dice
+  dice_pickup:     [280, 0.06,  'triangle'],
+  dice_shake:      [160, 0.10,  'triangle'],
+  dice_roll:       [190, 0.13,  'triangle'],
+  dice_land:       [640, 0.11,  'sine'],
+  // Token movement
+  token_select:    [510, 0.07,  'sine'],
+  token_step:      [320, 0.035, 'triangle'],
+  token_land:      [580, 0.08,  'sine'],
   token_enter_board: [680, 0.14, 'sine'],
-  capture: [250, 0.18, 'triangle'],
-  safe_cell: [740, 0.12, 'sine'],
-  extra_turn: [820, 0.16, 'sine'],
-  turn_start: [470, 0.1, 'sine'],
-  victory: [880, 0.23, 'sine'],
-  defeat: [210, 0.2, 'triangle'],
-  reward: [760, 0.18, 'sine'],
+  token_enter_home:  [760, 0.18, 'sine'],
+  // Gameplay
+  capture:         [250, 0.18,  'triangle'],
+  safe_cell:       [740, 0.12,  'sine'],
+  extra_turn:      [820, 0.16,  'sine'],
+  invalid_move:    [200, 0.09,  'triangle'],
+  turn_start:      [470, 0.10,  'sine'],
+  countdown:       [380, 0.09,  'sine'],
+  // Game outcome
+  victory:         [880, 0.23,  'sine'],
+  defeat:          [210, 0.20,  'triangle'],
+  reward:          [760, 0.18,  'sine'],
 };
 
 class AudioManager {
@@ -59,7 +74,7 @@ class AudioManager {
   setSfxEnabled(value: boolean): void { this.prefs.sfx = value; this.save(); }
   setMusicEnabled(value: boolean): void { this.prefs.music = value; this.save(); }
 
-  playSfx(name: SoundEffect): void {
+  playSfx(name: SoundEffect, pitchMul = 1): void {
     if (!this.prefs.sfx || this.prefs.sfxVolume <= 0 || typeof window === 'undefined') return;
     try {
       const Context = window.AudioContext;
@@ -70,8 +85,9 @@ class AudioManager {
       const oscillator = this.context.createOscillator();
       const gain = this.context.createGain();
       oscillator.type = waveform;
-      oscillator.frequency.setValueAtTime(frequency, this.context.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.72, this.context.currentTime + duration);
+      const freq = frequency * pitchMul;
+      oscillator.frequency.setValueAtTime(freq, this.context.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(freq * 0.72, this.context.currentTime + duration);
       gain.gain.setValueAtTime(Math.max(0.0001, this.prefs.sfxVolume / 100 * 0.07), this.context.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, this.context.currentTime + duration);
       oscillator.connect(gain);
@@ -81,6 +97,32 @@ class AudioManager {
     } catch {
       // Audio is optional; visuals and rules continue if the browser blocks it.
     }
+  }
+
+  /** Multi-note victory fanfare: three ascending tones */
+  playVictoryFanfare(): void {
+    if (!this.prefs.sfx || this.prefs.sfxVolume <= 0 || typeof window === 'undefined') return;
+    try {
+      const Context = window.AudioContext;
+      if (!Context) return;
+      this.context ??= new Context();
+      if (this.context.state === 'suspended') void this.context.resume();
+      const vol = Math.max(0.0001, this.prefs.sfxVolume / 100 * 0.07);
+      const notes = [660, 880, 1100];
+      notes.forEach((freq, i) => {
+        const osc = this.context!.createOscillator();
+        const gain = this.context!.createGain();
+        const t = this.context!.currentTime + i * 0.18;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(vol, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+        osc.connect(gain);
+        gain.connect(this.context!.destination);
+        osc.start(t);
+        osc.stop(t + 0.22);
+      });
+    } catch { /* audio optional */ }
   }
 
   playMusic(_name: string): void {
